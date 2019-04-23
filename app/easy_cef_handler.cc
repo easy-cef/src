@@ -12,6 +12,8 @@
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
 
+#include "app/shared/resource_util.h"
+
 namespace {
 
 EasyCefHandler* g_instance = NULL;
@@ -127,4 +129,39 @@ void EasyCefHandler::CloseAllBrowsers(bool force_close) {
   BrowserList::const_iterator it = browser_list_.begin();
   for (; it != browser_list_.end(); ++it)
     (*it)->GetHost()->CloseBrowser(force_close);
+}
+
+bool EasyCefHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
+                            CefRefPtr<CefFrame> frame,
+                            CefRefPtr<CefRequest> request,
+                            bool user_gesture,
+                            bool is_redirect) {
+  CEF_REQUIRE_UI_THREAD();
+  return false;
+}
+
+CefRefPtr<CefResourceHandler> EasyCefHandler::GetResourceHandler(
+    CefRefPtr<CefBrowser> browser,
+    CefRefPtr<CefFrame> frame,
+    CefRefPtr<CefRequest> request) {
+  CEF_REQUIRE_IO_THREAD();
+
+  const std::string& url = request->GetURL();
+  //DLOG(INFO) << "EasyCefHandler::GetResourceHandler: " << url.c_str();
+
+  // This is a minimal implementation of resource loading. For more complex
+  // usage (multiple files, zip archives, custom handlers, etc.) you might want
+  // to use CefResourceManager. See the "resource_manager" target for an
+  // example implementation.
+  const std::string& resource_path = shared::GetResourcePath(url);
+  if (!resource_path.empty())
+    return shared::GetResourceHandler(resource_path);
+
+  return NULL;
+}
+
+void EasyCefHandler::OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
+                                               TerminationStatus status) {
+  CEF_REQUIRE_UI_THREAD();
+  DLOG(INFO) << "EasyCefHandler::OnRenderProcessTerminated";
 }

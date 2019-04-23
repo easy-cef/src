@@ -7,8 +7,16 @@
 // Used by easy_cef_app.rc
 //
 
-#define IDI_CEFSIMPLE 100
+#define IDI_EASY_CEF 100
 #define IDI_SMALL 101
+
+
+// DOM resources
+#define BINARY 256
+#define IDS_INTERNAL_DOM_INDEX_HTML 1000
+#define IDS_INTERNAL_DOM_INDEX_CSS  1001
+#define IDS_INTERNAL_DOM_INDEX_JS   1002
+
 
 // Avoid files associated with MacOS
 #define _X86_

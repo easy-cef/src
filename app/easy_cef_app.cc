@@ -34,7 +34,7 @@ void EasyCefApp::OnContextInitialized() {
   // that instead of the default URL.
   url = command_line->GetSwitchValue("url");
   if (url.empty())
-    url = "https://www.bing.com";
+    url = "chrome://internal.dom/index.html";
 
   // Information used when creating the native window.
   CefWindowInfo window_info;

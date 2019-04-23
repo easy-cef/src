@@ -8,9 +8,10 @@
 #include <list>
 
 class EasyCefHandler : public CefClient,
-                      public CefDisplayHandler,
-                      public CefLifeSpanHandler,
-                      public CefLoadHandler {
+                       public CefDisplayHandler,
+                       public CefLifeSpanHandler,
+                       public CefLoadHandler,
+                       public CefRequestHandler {
  public:
   explicit EasyCefHandler(bool use_views);
   ~EasyCefHandler();
@@ -25,7 +26,12 @@ class EasyCefHandler : public CefClient,
   virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() OVERRIDE {
     return this;
   }
-  virtual CefRefPtr<CefLoadHandler> GetLoadHandler() OVERRIDE { return this; }
+  virtual CefRefPtr<CefLoadHandler> GetLoadHandler() OVERRIDE {
+    return this;
+  }
+  virtual CefRefPtr<CefRequestHandler> GetRequestHandler() OVERRIDE {
+    return this;
+  }
 
   // CefDisplayHandler methods:
   virtual void OnTitleChange(CefRefPtr<CefBrowser> browser,
@@ -42,6 +48,19 @@ class EasyCefHandler : public CefClient,
                            ErrorCode errorCode,
                            const CefString& errorText,
                            const CefString& failedUrl) OVERRIDE;
+
+  // CefRequestHandler methods:
+  virtual bool OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
+                      CefRefPtr<CefFrame> frame,
+                      CefRefPtr<CefRequest> request,
+                      bool user_gesture,
+                      bool is_redirect) OVERRIDE;
+  virtual CefRefPtr<CefResourceHandler> GetResourceHandler(
+    CefRefPtr<CefBrowser> browser,
+    CefRefPtr<CefFrame> frame,
+    CefRefPtr<CefRequest> request) OVERRIDE;
+  virtual void OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
+                                         TerminationStatus status) OVERRIDE;
 
   // Request that all existing browser windows close.
   void CloseAllBrowsers(bool force_close);
