@@ -10,20 +10,20 @@
 set(EASY_CEF_APP_SRCS
   easy_cef_app.cc
   easy_cef_app.h
-  easy_cef_handler.cc
-  easy_cef_handler.h
+  easy_cef_client.cc
+  easy_cef_client.h
   shared/resource_util.cc
   shared/resource_util.h
   )
 set(EASY_CEF_APP_SRCS_LINUX
   easy_cef_app_linux.cc
-  easy_cef_handler_linux.cc
+  easy_cef_client_linux.cc
   shared/resource_util_linux.cc
   shared/resource_util_posix.cc
   )
 set(EASY_CEF_APP_SRCS_MACOSX
   easy_cef_app_mac.mm
-  easy_cef_handler_mac.mm
+  easy_cef_client_mac.mm
   shared/resource_util_mac.mm
   shared/resource_util_posix.cc
   )
@@ -31,7 +31,7 @@ set(EASY_CEF_APP_SRCS_WINDOWS
   easy_cef_app.exe.manifest
   easy_cef_app.rc
   easy_cef_app_win.cc
-  easy_cef_handler_win.cc
+  easy_cef_client_win.cc
   resource.h
   resource_util_win_impl.cc
   shared/resource_util_win.cc

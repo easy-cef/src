@@ -7,17 +7,17 @@
 
 #include <list>
 
-class EasyCefHandler : public CefClient,
-                       public CefDisplayHandler,
-                       public CefLifeSpanHandler,
-                       public CefLoadHandler,
-                       public CefRequestHandler {
+class EasyCefClient : public CefClient,
+                      public CefDisplayHandler,
+                      public CefLifeSpanHandler,
+                      public CefLoadHandler,
+                      public CefRequestHandler {
  public:
-  explicit EasyCefHandler(bool use_views);
-  ~EasyCefHandler();
+  explicit EasyCefClient(bool use_views);
+  ~EasyCefClient();
 
   // Provide access to the single global instance of this object.
-  static EasyCefHandler* GetInstance();
+  static EasyCefClient* GetInstance();
 
   // CefClient methods:
   virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler() OVERRIDE {
@@ -51,10 +51,10 @@ class EasyCefHandler : public CefClient,
 
   // CefRequestHandler methods:
   virtual bool OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
-                      CefRefPtr<CefFrame> frame,
-                      CefRefPtr<CefRequest> request,
-                      bool user_gesture,
-                      bool is_redirect) OVERRIDE;
+                              CefRefPtr<CefFrame> frame,
+                              CefRefPtr<CefRequest> request,
+                              bool user_gesture,
+                              bool is_redirect) OVERRIDE;
   virtual CefRefPtr<CefResourceHandler> GetResourceHandler(
     CefRefPtr<CefBrowser> browser,
     CefRefPtr<CefFrame> frame,
@@ -82,7 +82,7 @@ class EasyCefHandler : public CefClient,
   bool is_closing_;
 
   // Include the default reference counting implementation.
-  IMPLEMENT_REFCOUNTING(EasyCefHandler);
+  IMPLEMENT_REFCOUNTING(EasyCefClient);
 };
 
 #endif  // CEF_TESTS_CEFSIMPLE_SIMPLE_HANDLER_H_

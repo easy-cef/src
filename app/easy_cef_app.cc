@@ -9,7 +9,7 @@
 #include "include/views/cef_browser_view.h"
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_helpers.h"
-#include "app/easy_cef_handler.h"
+#include "app/easy_cef_client.h"
 
 
 EasyCefApp::EasyCefApp() {}
@@ -22,8 +22,8 @@ void EasyCefApp::OnContextInitialized() {
 
   const bool use_views = false;
 
-  // EasyCefHandler implements browser-level callbacks.
-  CefRefPtr<EasyCefHandler> handler(new EasyCefHandler(use_views));
+  // EasyCefClient implements browser-level callbacks.
+  CefRefPtr<EasyCefClient> handler(new EasyCefClient(use_views));
 
   // Specify CEF browser settings here.
   CefBrowserSettings browser_settings;

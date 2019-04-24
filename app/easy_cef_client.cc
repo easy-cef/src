@@ -1,6 +1,6 @@
 // george @ 2019/4/21
 
-#include "app/easy_cef_handler.h"
+#include "app/easy_cef_client.h"
 
 #include <sstream>
 #include <string>
@@ -16,26 +16,26 @@
 
 namespace {
 
-EasyCefHandler* g_instance = NULL;
+EasyCefClient* g_instance = NULL;
 
 }  // namespace
 
-EasyCefHandler::EasyCefHandler(bool use_views)
+EasyCefClient::EasyCefClient(bool use_views)
     : use_views_(use_views), is_closing_(false) {
   DCHECK(!g_instance);
   g_instance = this;
 }
 
-EasyCefHandler::~EasyCefHandler() {
+EasyCefClient::~EasyCefClient() {
   g_instance = NULL;
 }
 
 // static
-EasyCefHandler* EasyCefHandler::GetInstance() {
+EasyCefClient* EasyCefClient::GetInstance() {
   return g_instance;
 }
 
-void EasyCefHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
+void EasyCefClient::OnTitleChange(CefRefPtr<CefBrowser> browser,
                                   const CefString& title) {
   CEF_REQUIRE_UI_THREAD();
 
@@ -54,14 +54,14 @@ void EasyCefHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
   }
 }
 
-void EasyCefHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
+void EasyCefClient::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
   CEF_REQUIRE_UI_THREAD();
 
   // Add to the list of existing browsers.
   browser_list_.push_back(browser);
 }
 
-bool EasyCefHandler::DoClose(CefRefPtr<CefBrowser> browser) {
+bool EasyCefClient::DoClose(CefRefPtr<CefBrowser> browser) {
   CEF_REQUIRE_UI_THREAD();
 
   // Closing the main window requires special handling. See the DoClose()
@@ -77,7 +77,7 @@ bool EasyCefHandler::DoClose(CefRefPtr<CefBrowser> browser) {
   return false;
 }
 
-void EasyCefHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
+void EasyCefClient::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
   CEF_REQUIRE_UI_THREAD();
 
   // Remove from the list of existing browsers.
@@ -95,7 +95,7 @@ void EasyCefHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
   }
 }
 
-void EasyCefHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
+void EasyCefClient::OnLoadError(CefRefPtr<CefBrowser> browser,
                                 CefRefPtr<CefFrame> frame,
                                 ErrorCode errorCode,
                                 const CefString& errorText,
@@ -115,10 +115,10 @@ void EasyCefHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
   frame->LoadString(ss.str(), failedUrl);
 }
 
-void EasyCefHandler::CloseAllBrowsers(bool force_close) {
+void EasyCefClient::CloseAllBrowsers(bool force_close) {
   if (!CefCurrentlyOn(TID_UI)) {
     // Execute on the UI thread.
-    CefPostTask(TID_UI, base::Bind(&EasyCefHandler::CloseAllBrowsers, this,
+    CefPostTask(TID_UI, base::Bind(&EasyCefClient::CloseAllBrowsers, this,
                                    force_close));
     return;
   }
@@ -131,23 +131,23 @@ void EasyCefHandler::CloseAllBrowsers(bool force_close) {
     (*it)->GetHost()->CloseBrowser(force_close);
 }
 
-bool EasyCefHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
-                            CefRefPtr<CefFrame> frame,
-                            CefRefPtr<CefRequest> request,
-                            bool user_gesture,
-                            bool is_redirect) {
+bool EasyCefClient::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
+                                   CefRefPtr<CefFrame> frame,
+                                   CefRefPtr<CefRequest> request,
+                                   bool user_gesture,
+                                   bool is_redirect) {
   CEF_REQUIRE_UI_THREAD();
   return false;
 }
 
-CefRefPtr<CefResourceHandler> EasyCefHandler::GetResourceHandler(
+CefRefPtr<CefResourceHandler> EasyCefClient::GetResourceHandler(
     CefRefPtr<CefBrowser> browser,
     CefRefPtr<CefFrame> frame,
     CefRefPtr<CefRequest> request) {
   CEF_REQUIRE_IO_THREAD();
 
   const std::string& url = request->GetURL();
-  //DLOG(INFO) << "EasyCefHandler::GetResourceHandler: " << url.c_str();
+  //DLOG(INFO) << "EasyCefClient::GetResourceHandler: " << url.c_str();
 
   // This is a minimal implementation of resource loading. For more complex
   // usage (multiple files, zip archives, custom handlers, etc.) you might want
@@ -160,8 +160,8 @@ CefRefPtr<CefResourceHandler> EasyCefHandler::GetResourceHandler(
   return NULL;
 }
 
-void EasyCefHandler::OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
-                                               TerminationStatus status) {
+void EasyCefClient::OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
+                                              TerminationStatus status) {
   CEF_REQUIRE_UI_THREAD();
-  DLOG(INFO) << "EasyCefHandler::OnRenderProcessTerminated";
+  DLOG(INFO) << "EasyCefClient::OnRenderProcessTerminated";
 }
