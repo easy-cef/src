@@ -1,9 +1,10 @@
 // george @ 2019/4/21
 
-#ifndef CEF_TESTS_CEFSIMPLE_SIMPLE_HANDLER_H_
-#define CEF_TESTS_CEFSIMPLE_SIMPLE_HANDLER_H_
+#ifndef EASY_CEF_APP_EASY_CEF_CLIENT_H_
+#define EASY_CEF_APP_EASY_CEF_CLIENT_H_
 
 #include "include/cef_client.h"
+#include "include/wrapper/cef_message_router.h"
 
 #include <list>
 
@@ -32,6 +33,9 @@ class EasyCefClient : public CefClient,
   virtual CefRefPtr<CefRequestHandler> GetRequestHandler() OVERRIDE {
     return this;
   }
+  bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
+                                CefProcessId source_process,
+                                CefRefPtr<CefProcessMessage> message) OVERRIDE;
 
   // CefDisplayHandler methods:
   virtual void OnTitleChange(CefRefPtr<CefBrowser> browser,
@@ -79,10 +83,14 @@ class EasyCefClient : public CefClient,
   typedef std::list<CefRefPtr<CefBrowser>> BrowserList;
   BrowserList browser_list_;
 
+  // Handles the browser side of query routing.
+  CefRefPtr<CefMessageRouterBrowserSide> message_router_;
+  scoped_ptr<CefMessageRouterBrowserSide::Handler> message_handler_;
+
   bool is_closing_;
 
   // Include the default reference counting implementation.
   IMPLEMENT_REFCOUNTING(EasyCefClient);
 };
 
-#endif  // CEF_TESTS_CEFSIMPLE_SIMPLE_HANDLER_H_
+#endif  // EASY_CEF_APP_EASY_CEF_CLIENT_H_

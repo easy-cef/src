@@ -18,6 +18,37 @@ namespace {
 
 EasyCefClient* g_instance = NULL;
 
+const char kTestMessageName[] = "MessageRouterTest";
+
+// Handle messages in the browser process.
+class MessageHandler : public CefMessageRouterBrowserSide::Handler {
+ public:
+  explicit MessageHandler() {}
+
+  // Called due to cefQuery execution in message_router.html.
+  bool OnQuery(CefRefPtr<CefBrowser> browser,
+               CefRefPtr<CefFrame> frame,
+               int64 query_id,
+               const CefString& request,
+               bool persistent,
+               CefRefPtr<Callback> callback) OVERRIDE {
+    const std::string& message_name = request;
+    if (message_name.find(kTestMessageName) == 0) {
+      // Reverse the string and return.
+      std::string result = message_name.substr(sizeof(kTestMessageName));
+      std::reverse(result.begin(), result.end());
+      callback->Success(result);
+      return true;
+    }
+
+    return false;
+  }
+
+private:
+
+  DISALLOW_COPY_AND_ASSIGN(MessageHandler);
+};
+
 }  // namespace
 
 EasyCefClient::EasyCefClient(bool use_views)
@@ -33,6 +64,15 @@ EasyCefClient::~EasyCefClient() {
 // static
 EasyCefClient* EasyCefClient::GetInstance() {
   return g_instance;
+}
+
+bool EasyCefClient::OnProcessMessageReceived(
+  CefRefPtr<CefBrowser> browser,
+  CefProcessId source_process,
+  CefRefPtr<CefProcessMessage> message) {
+  CEF_REQUIRE_UI_THREAD();
+
+  return message_router_->OnProcessMessageReceived(browser, source_process, message);
 }
 
 void EasyCefClient::OnTitleChange(CefRefPtr<CefBrowser> browser,
@@ -56,6 +96,16 @@ void EasyCefClient::OnTitleChange(CefRefPtr<CefBrowser> browser,
 
 void EasyCefClient::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
   CEF_REQUIRE_UI_THREAD();
+
+  if (!message_router_) {
+    // Create the browser-side router for query handling.
+    CefMessageRouterConfig config;
+    message_router_ = CefMessageRouterBrowserSide::Create(config);
+
+    // Register handlers with the router.
+    message_handler_.reset(new MessageHandler());
+    message_router_->AddHandler(message_handler_.get(), false);
+  }
 
   // Add to the list of existing browsers.
   browser_list_.push_back(browser);
@@ -90,6 +140,11 @@ void EasyCefClient::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
   }
 
   if (browser_list_.empty()) {
+    // Free the router when the last browser is closed.
+    message_router_->RemoveHandler(message_handler_.get());
+    message_handler_.reset();
+    message_router_ = NULL;
+
     // All browser windows have closed. Quit the application message loop.
     CefQuitMessageLoop();
   }
@@ -137,6 +192,8 @@ bool EasyCefClient::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
                                    bool user_gesture,
                                    bool is_redirect) {
   CEF_REQUIRE_UI_THREAD();
+
+  message_router_->OnBeforeBrowse(browser, frame);
   return false;
 }
 
@@ -164,4 +221,6 @@ void EasyCefClient::OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
                                               TerminationStatus status) {
   CEF_REQUIRE_UI_THREAD();
   DLOG(INFO) << "EasyCefClient::OnRenderProcessTerminated";
+
+  message_router_->OnRenderProcessTerminated(browser);
 }

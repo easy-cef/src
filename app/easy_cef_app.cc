@@ -23,7 +23,7 @@ void EasyCefApp::OnContextInitialized() {
   const bool use_views = false;
 
   // EasyCefClient implements browser-level callbacks.
-  CefRefPtr<EasyCefClient> handler(new EasyCefClient(use_views));
+  CefRefPtr<EasyCefClient> client(new EasyCefClient(use_views));
 
   // Specify CEF browser settings here.
   CefBrowserSettings browser_settings;
@@ -46,5 +46,18 @@ void EasyCefApp::OnContextInitialized() {
 #endif
 
   // Create the first browser window.
-  CefBrowserHost::CreateBrowser(window_info, handler, url, browser_settings, NULL);
+  CefBrowserHost::CreateBrowser(window_info, client, url, browser_settings, NULL);
 }
+
+
+namespace shared {
+
+CefRefPtr<CefApp> CreateBrowserProcessApp() {
+  return new EasyCefApp();
+}
+
+CefRefPtr<CefApp> CreateOtherProcessApp() {
+  return NULL;
+}
+
+}  // namespace shared

@@ -3,7 +3,8 @@
 #include <windows.h>
 
 #include "include/cef_sandbox_win.h"
-#include "app/easy_cef_app.h"
+#include "app/shared/app_factory.h"
+#include "app/shared/main_util.h"
 
 // When generating projects with CMake the CEF_USE_SANDBOX value will be defined
 // automatically if using the required compiler version. Pass -DUSE_SANDBOX=OFF
@@ -40,10 +41,27 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
   // Provide CEF with command-line arguments.
   CefMainArgs main_args(hInstance);
 
+  // Create a temporary CommandLine object.
+  CefRefPtr<CefCommandLine> command_line = shared::CreateCommandLine(main_args);
+
+  // Create a CefApp of the correct process type.
+  CefRefPtr<CefApp> app;
+  switch (shared::GetProcessType(command_line)) {
+    case shared::PROCESS_TYPE_BROWSER:
+      app = shared::CreateBrowserProcessApp();
+      break;
+    case shared::PROCESS_TYPE_RENDERER:
+      app = shared::CreateRendererProcessApp();
+      break;
+    case shared::PROCESS_TYPE_OTHER:
+      app = shared::CreateOtherProcessApp();
+      break;
+  }
+
   // CEF applications have multiple sub-processes (render, plugin, GPU, etc)
   // that share the same executable. This function checks the command-line and,
   // if this is a sub-process, executes the appropriate logic.
-  int exit_code = CefExecuteProcess(main_args, NULL, sandbox_info);
+  int exit_code = CefExecuteProcess(main_args, app, sandbox_info);
   if (exit_code >= 0) {
     // The sub-process has completed so return here.
     return exit_code;
@@ -56,13 +74,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
   settings.no_sandbox = true;
 #endif
 
-  // EasyCefApp implements application-level callbacks for the browser process.
-  // It will create the first browser instance in OnContextInitialized() after
-  // CEF has initialized.
-  CefRefPtr<EasyCefApp> app(new EasyCefApp);
-
   // Initialize CEF.
-  CefInitialize(main_args, settings, app.get(), sandbox_info);
+  CefInitialize(main_args, settings, app, sandbox_info);
 
   // Run the CEF message loop. This will block until CefQuitMessageLoop() is
   // called.
