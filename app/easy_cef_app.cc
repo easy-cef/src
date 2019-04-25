@@ -56,8 +56,4 @@ CefRefPtr<CefApp> CreateBrowserProcessApp() {
   return new EasyCefApp();
 }
 
-CefRefPtr<CefApp> CreateOtherProcessApp() {
-  return NULL;
-}
-
 }  // namespace shared

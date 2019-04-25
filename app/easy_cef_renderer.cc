@@ -38,4 +38,8 @@ CefRefPtr<CefApp> CreateRendererProcessApp() {
   return new EasyCefRenderer();
 }
 
+CefRefPtr<CefApp> CreateOtherProcessApp() {
+  return new EasyCefRenderer();
+}
+
 }
