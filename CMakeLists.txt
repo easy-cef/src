@@ -87,7 +87,7 @@ add_subdirectory(${CEF_LIBCEF_DLL_WRAPPER_PATH} libcef_dll_wrapper)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # TODO: Include other application targets here.
-
+add_subdirectory(app)
 
 # Display configuration settings.
 PRINT_CEF_CONFIG()
