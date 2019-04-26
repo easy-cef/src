@@ -70,6 +70,28 @@ class BinaryResourceProvider : public CefResourceManager::Provider {
   DISALLOW_COPY_AND_ASSIGN(BinaryResourceProvider);
 };
 
+bool FileExists(const char* path) {
+  FILE* f = fopen(path, "rb");
+  if (f) {
+    fclose(f);
+    return true;
+  }
+  return false;
+}
+
+bool GetResourceDir(std::string& dir) {
+  char system_buffer[MAX_PATH];
+  system_buffer[0] = 0;
+  DWORD len = ::GetCurrentDirectoryA(MAX_PATH, system_buffer);
+  if (len == 0 || len > MAX_PATH)
+    return false;
+
+  dir = system_buffer;
+  dir.append("\\dom");
+
+  return true;
+}
+
 }  // namespace
 
 CefResourceManager::Provider* CreateBinaryResourceProvider(
@@ -95,8 +117,29 @@ bool GetResourceString(const std::string& resource_path,
   return false;
 }
 
+CefRefPtr<CefStreamReader> GetResourceReaderForFile(const std::string& resource_path) {
+  std::string path;
+  if (!GetResourceDir(path))
+    return NULL;
+
+  path.append("\\");
+  path.append(resource_path);
+
+  if (!FileExists(path.c_str())) {
+    DLOG(INFO) << "Resource not found in file system: " << path.c_str();
+    return NULL;
+  }
+
+  return CefStreamReader::CreateForFile(path);
+}
+
 CefRefPtr<CefStreamReader> GetResourceReader(const std::string& resource_path) {
-  //DLOG(INFO) << "GetResourceReader, resource_path=" << resource_path.c_str();
+  // Try finding resource in file system first.
+  CefRefPtr<CefStreamReader> reader = GetResourceReaderForFile(resource_path);
+  if(reader)
+    return reader;
+
+  // Fall back to binary resources
   int resource_id = GetResourceId(resource_path);
   if (resource_id == 0)
     return NULL;
