@@ -16,6 +16,8 @@ public:
       OVERRIDE {
     return this;
   }
+  virtual void OnRegisterCustomSchemes(
+    CefRawPtr<CefSchemeRegistrar> registrar) OVERRIDE;
 
   // CefRenderProcessHandler methods:
   virtual void OnWebKitInitialized() OVERRIDE;

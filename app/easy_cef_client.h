@@ -12,7 +12,8 @@ class EasyCefClient : public CefClient,
                       public CefDisplayHandler,
                       public CefLifeSpanHandler,
                       public CefLoadHandler,
-                      public CefRequestHandler {
+                      public CefRequestHandler,
+                      public CefContextMenuHandler {
  public:
   explicit EasyCefClient(bool use_views);
   ~EasyCefClient();
@@ -31,6 +32,9 @@ class EasyCefClient : public CefClient,
     return this;
   }
   virtual CefRefPtr<CefRequestHandler> GetRequestHandler() OVERRIDE {
+    return this;
+  }
+  virtual CefRefPtr<CefContextMenuHandler> GetContextMenuHandler() OVERRIDE {
     return this;
   }
   bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
@@ -65,6 +69,12 @@ class EasyCefClient : public CefClient,
     CefRefPtr<CefRequest> request) OVERRIDE;
   virtual void OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
                                          TerminationStatus status) OVERRIDE;
+
+  // CefContextMenuHandler methods:
+  virtual void OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
+                                   CefRefPtr<CefFrame> frame,
+                                   CefRefPtr<CefContextMenuParams> params,
+                                   CefRefPtr<CefMenuModel> model);
 
   // Request that all existing browser windows close.
   void CloseAllBrowsers(bool force_close);

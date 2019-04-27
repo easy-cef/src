@@ -224,3 +224,11 @@ void EasyCefClient::OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
 
   message_router_->OnRenderProcessTerminated(browser);
 }
+
+// CefContextMenuHandler methods:
+void EasyCefClient::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
+                                        CefRefPtr<CefFrame> frame,
+                                        CefRefPtr<CefContextMenuParams> params,
+                                        CefRefPtr<CefMenuModel> model) {
+  model->Clear();
+}

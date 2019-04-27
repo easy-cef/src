@@ -10,11 +10,15 @@
 set(EASY_CEF_APP_SRCS
   easy_cef_app.cc
   easy_cef_app.h
-  easy_cef_renderer.cc
-  easy_cef_renderer.h
   easy_cef_client.cc
   easy_cef_client.h
+  easy_cef_renderer.cc
+  easy_cef_renderer.h
+  easy_cef_scheme_handler.cc
+  easy_cef_scheme_handler.h
   shared/app_factory.h
+  shared/constants.cc
+  shared/constants.h
   shared/resource_util.cc
   shared/resource_util.h
   shared/main_util.cc

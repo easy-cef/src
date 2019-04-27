@@ -9,10 +9,18 @@
 #include "include/views/cef_browser_view.h"
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_helpers.h"
+#include "app/shared/constants.h"
 #include "app/easy_cef_client.h"
+#include "app/easy_cef_scheme_handler.h"
 
 
 EasyCefApp::EasyCefApp() {}
+
+void EasyCefApp::OnRegisterCustomSchemes(
+  CefRawPtr<CefSchemeRegistrar> registrar) {
+  registrar->AddCustomScheme(
+    easycef::kEasyCefScheme, CEF_SCHEME_OPTION_STANDARD | CEF_SCHEME_OPTION_CORS_ENABLED);
+}
 
 void EasyCefApp::OnContextInitialized() {
   CEF_REQUIRE_UI_THREAD();
@@ -33,8 +41,13 @@ void EasyCefApp::OnContextInitialized() {
   // Check if a "--url=" value was provided via the command-line. If so, use
   // that instead of the default URL.
   url = command_line->GetSwitchValue("url");
-  if (url.empty())
-    url = "chrome://internal.dom/index.html";
+  if (url.empty()) {
+    url = easycef::kEasyCefScheme;
+    url.append("://");
+    url.append(easycef::kDomDomain);
+    url.append("/");
+    url.append(easycef::kDefaultEntryPage);
+  }
 
   // Information used when creating the native window.
   CefWindowInfo window_info;
@@ -44,6 +57,9 @@ void EasyCefApp::OnContextInitialized() {
   // CreateWindowEx().
   window_info.SetAsPopup(NULL, "easy_cef_app");
 #endif
+
+  // Register scheme handler.
+  easycef::RegisterEasyCefSchemeHandler();
 
   // Create the first browser window.
   CefBrowserHost::CreateBrowser(window_info, client, url, browser_settings, NULL);
