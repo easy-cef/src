@@ -5,9 +5,10 @@
 
 namespace easycef {
 
-extern const char kScheme[];
-extern const char kInternalDomain[];
+extern const char kEasyCefScheme[];
+extern const char kDomDomain[];
 extern const char kInternalDomOrigin[];
+extern const char kDefaultEntryPage[];
 
 }  // namespace easycef
 

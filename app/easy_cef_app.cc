@@ -11,9 +11,16 @@
 #include "include/wrapper/cef_helpers.h"
 #include "app/shared/constants.h"
 #include "app/easy_cef_client.h"
+#include "app/easy_cef_scheme_handler.h"
 
 
 EasyCefApp::EasyCefApp() {}
+
+void EasyCefApp::OnRegisterCustomSchemes(
+  CefRawPtr<CefSchemeRegistrar> registrar) {
+  registrar->AddCustomScheme(
+    easycef::kEasyCefScheme, CEF_SCHEME_OPTION_STANDARD | CEF_SCHEME_OPTION_CORS_ENABLED);
+}
 
 void EasyCefApp::OnContextInitialized() {
   CEF_REQUIRE_UI_THREAD();
@@ -47,6 +54,9 @@ void EasyCefApp::OnContextInitialized() {
   // CreateWindowEx().
   window_info.SetAsPopup(NULL, "easy_cef_app");
 #endif
+
+  // Register scheme handler.
+  easycef::RegisterEasyCefSchemeHandler();
 
   // Create the first browser window.
   CefBrowserHost::CreateBrowser(window_info, client, url, browser_settings, NULL);

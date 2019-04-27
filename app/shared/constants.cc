@@ -4,8 +4,9 @@
 
 namespace easycef {
 
-const char kScheme[] = "easycef";
-const char kInternalDomain[] = "internal";
+const char kEasyCefScheme[] = "easycef";
+const char kDomDomain[] = "dom";
 const char kInternalDomOrigin[] = "chrome://internal.dom/";
+const char kDefaultEntryPage[] = "index.html";
 
 }  // namespace easycef

@@ -2,7 +2,15 @@
 
 #include "app/easy_cef_renderer.h"
 
+#include "app/shared/constants.h"
+
 EasyCefRenderer::EasyCefRenderer() {
+}
+
+void EasyCefRenderer::OnRegisterCustomSchemes(
+  CefRawPtr<CefSchemeRegistrar> registrar) {
+  registrar->AddCustomScheme(
+    easycef::kEasyCefScheme, CEF_SCHEME_OPTION_STANDARD | CEF_SCHEME_OPTION_CORS_ENABLED);
 }
 
 // CefRenderProcessHandler methods:
