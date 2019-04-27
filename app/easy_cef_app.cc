@@ -9,6 +9,7 @@
 #include "include/views/cef_browser_view.h"
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_helpers.h"
+#include "app/shared/constants.h"
 #include "app/easy_cef_client.h"
 
 
@@ -33,8 +34,10 @@ void EasyCefApp::OnContextInitialized() {
   // Check if a "--url=" value was provided via the command-line. If so, use
   // that instead of the default URL.
   url = command_line->GetSwitchValue("url");
-  if (url.empty())
-    url = "chrome://internal.dom/index.html";
+  if (url.empty()) {
+    url = easycef::kInternalDomOrigin;
+    url.append("index.html");
+  }
 
   // Information used when creating the native window.
   CefWindowInfo window_info;

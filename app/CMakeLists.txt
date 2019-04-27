@@ -15,6 +15,8 @@ set(EASY_CEF_APP_SRCS
   easy_cef_client.cc
   easy_cef_client.h
   shared/app_factory.h
+  shared/constants.cc
+  shared/constants.h
   shared/resource_util.cc
   shared/resource_util.h
   shared/main_util.cc

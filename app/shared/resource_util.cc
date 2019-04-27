@@ -6,10 +6,9 @@
 
 #include "include/cef_parser.h"
 #include "include/wrapper/cef_stream_resource_handler.h"
+#include "app/shared/constants.h"
 
 namespace shared {
-
-const char kInternalDomOrigin[] = "chrome://internal.dom/";
 
 namespace {
 
@@ -26,11 +25,12 @@ std::string GetUrlWithoutQueryOrFragment(const std::string& url) {
 }  // namespace
 
 std::string GetResourcePath(const std::string& url) {
-  if (url.find(kInternalDomOrigin) != 0U)
+  if (url.find(easycef::kInternalDomOrigin) != 0U)
     return std::string();
 
   const std::string& url_no_query = GetUrlWithoutQueryOrFragment(url);
-  return url_no_query.substr(sizeof(kInternalDomOrigin) - 1);
+  static size_t origin_len = strlen(easycef::kInternalDomOrigin);
+  return url_no_query.substr(origin_len);
 }
 
 // Determine the mime type based on the |file_path| file extension.
