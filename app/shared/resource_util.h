@@ -25,10 +25,8 @@ namespace shared {
 // Origin for loading local test resources.
 extern const char kTestOrigin[];
 
-#if defined(OS_POSIX)
-// Retrieve the directory containing resource files on Linux and macOS.
+// Retrieve the directory containing resource files.
 bool GetResourceDir(std::string& dir);
-#endif
 
 // Returns the resource path for |url|. Removes fragment and/or query component
 // if it exists. The URL must start with kTestOrigin.

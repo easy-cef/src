@@ -7,6 +7,7 @@
 #include "include/base/cef_logging.h"
 #include "include/wrapper/cef_byte_read_handler.h"
 #include "include/wrapper/cef_stream_resource_handler.h"
+#include "app/shared/constants.h"
 
 namespace shared {
 
@@ -79,6 +80,8 @@ bool FileExists(const char* path) {
   return false;
 }
 
+}  // namespace
+
 bool GetResourceDir(std::string& dir) {
   char system_buffer[MAX_PATH];
   system_buffer[0] = 0;
@@ -87,12 +90,11 @@ bool GetResourceDir(std::string& dir) {
     return false;
 
   dir = system_buffer;
-  dir.append("\\dom");
+  dir.append("\\");
+  dir.append(easycef::kDomDomain);
 
   return true;
 }
-
-}  // namespace
 
 CefResourceManager::Provider* CreateBinaryResourceProvider(
     const std::string& url_path) {
@@ -126,7 +128,7 @@ CefRefPtr<CefStreamReader> GetResourceReaderForFile(const std::string& resource_
   path.append(resource_path);
 
   if (!FileExists(path.c_str())) {
-    DLOG(INFO) << "Resource not found in file system: " << path.c_str();
+    //DLOG(INFO) << "Resource not found in file system: " << path.c_str();
     return NULL;
   }
 

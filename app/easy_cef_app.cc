@@ -42,8 +42,11 @@ void EasyCefApp::OnContextInitialized() {
   // that instead of the default URL.
   url = command_line->GetSwitchValue("url");
   if (url.empty()) {
-    url = easycef::kInternalDomOrigin;
-    url.append("index.html");
+    url = easycef::kEasyCefScheme;
+    url.append("://");
+    url.append(easycef::kDomDomain);
+    url.append("/");
+    url.append(easycef::kDefaultEntryPage);
   }
 
   // Information used when creating the native window.
