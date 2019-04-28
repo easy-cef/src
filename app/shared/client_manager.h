@@ -2,8 +2,8 @@
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-#ifndef CEF_EXAMPLES_SHARED_CLIENT_MANAGER_H_
-#define CEF_EXAMPLES_SHARED_CLIENT_MANAGER_H_
+#ifndef EASY_CEF_APP_SHARED_CLIENT_MANAGER_H_
+#define EASY_CEF_APP_SHARED_CLIENT_MANAGER_H_
 
 #include <list>
 
@@ -45,4 +45,4 @@ class ClientManager {
 
 }  // namespace shared
 
-#endif  // CEF_EXAMPLES_SHARED_CLIENT_MANAGER_H_
+#endif  // EASY_CEF_APP_SHARED_CLIENT_MANAGER_H_

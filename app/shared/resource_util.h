@@ -2,8 +2,8 @@
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-#ifndef CEF_EXAMPLES_SHARED_RESOURCE_UTIL_H_
-#define CEF_EXAMPLES_SHARED_RESOURCE_UTIL_H_
+#ifndef EASY_CEF_APP_SHARED_RESOURCE_UTIL_H_
+#define EASY_CEF_APP_SHARED_RESOURCE_UTIL_H_
 
 #include <string>
 
@@ -65,4 +65,4 @@ CefRefPtr<CefResourceHandler> GetResourceHandler(
 
 }  // namespace shared
 
-#endif  // CEF_EXAMPLES_SHARED_RESOURCE_UTIL_H_
+#endif  // EASY_CEF_APP_SHARED_RESOURCE_UTIL_H_

@@ -2,8 +2,8 @@
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-#ifndef EASY_CEF_APP_SHARED_APP_UTIL_H_
-#define EASY_CEF_APP_SHARED_APP_UTIL_H_
+#ifndef EASY_CEF_APP_SHARED_MAIN_UTIL_H_
+#define EASY_CEF_APP_SHARED_MAIN_UTIL_H_
 
 #include "include/cef_command_line.h"
 
@@ -27,4 +27,4 @@ ProcessType GetProcessType(const CefRefPtr<CefCommandLine>& command_line);
 
 }  // namespace shared
 
-#endif  // EASY_CEF_APP_SHARED_APP_UTIL_H_
+#endif  // EASY_CEF_APP_SHARED_MAIN_UTIL_H_
