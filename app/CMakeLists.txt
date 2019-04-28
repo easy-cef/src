@@ -94,9 +94,19 @@ set(EASY_CEF_APP_RESOURCES_MAC_ENGLISH_LPROJ_SRCS_MACOSX
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_RESOURCES_MAC_ENGLISH_LPROJ_SRCS)
 source_group(easy_cef_app\\\\res\\\\mac\\\\English.lproj FILES ${EASY_CEF_APP_RESOURCES_MAC_ENGLISH_LPROJ_SRCS})
 
+# easy_cef_app internal DOM resources.
+set(EASY_CEF_APP_INTERNAL_DOM_SRCS_MACOSX
+  internal_dom/index.html
+  internal_dom/index.css
+  internal_dom/index.js
+  )
+APPEND_PLATFORM_SOURCES(EASY_CEF_APP_INTERNAL_DOM_SRCS)
+source_group(easy_cef_app\\\\internal_dom FILES ${EASY_CEF_APP_INTERNAL_DOM_SRCS})
+
 set(EASY_CEF_APP_RESOURCES_SRCS
   ${EASY_CEF_APP_RESOURCES_MAC_SRCS}
   ${EASY_CEF_APP_RESOURCES_MAC_ENGLISH_LPROJ_SRCS}
+  ${EASY_CEF_APP_INTERNAL_DOM_SRCS}
   )
 
 
@@ -199,7 +209,7 @@ if(OS_MACOSX)
   # The Xcode generator can support this via the set_target_properties RESOURCE
   # directive but that doesn't properly handle nested resource directories.
   # Remove these prefixes from input file paths.
-  set(PREFIXES "mac/")
+  set(PREFIXES "mac/" "internal_dom/")
   COPY_MACOSX_RESOURCES("${EASY_CEF_APP_RESOURCES_SRCS}" "${PREFIXES}" "${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}" "${CEF_APP}")
 endif()
 
