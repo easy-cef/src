@@ -10,6 +10,7 @@
 #include <stdio.h>
 
 #include "include/base/cef_logging.h"
+#include "app/shared/constants.h"
 
 namespace shared {
 
@@ -42,10 +43,13 @@ bool GetResourceDir(std::string& dir) {
     std::string::size_type last_separator = dir.find_last_of("/");
     dir.resize(last_separator);
     dir.append("/../Resources");
-    return true;
   }
+  else
+    dir.append("/Resources");
 
-  dir.append("/Resources");
+  dir.append("/");
+  dir.append(easycef::kDomDomain);
+
   return true;
 }
 
