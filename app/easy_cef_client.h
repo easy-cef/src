@@ -74,7 +74,7 @@ class EasyCefClient : public CefClient,
   virtual void OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
                                    CefRefPtr<CefFrame> frame,
                                    CefRefPtr<CefContextMenuParams> params,
-                                   CefRefPtr<CefMenuModel> model);
+                                   CefRefPtr<CefMenuModel> model) OVERRIDE;
 
   // Request that all existing browser windows close.
   void CloseAllBrowsers(bool force_close);

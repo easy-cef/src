@@ -6,8 +6,16 @@
 # Source files.
 #
 
+# Sources shared by all executables.
+set(SHARED_COMMON_SRCS
+  shared/app_factory.h
+  shared/main_util.cc
+  shared/main_util.h
+  )
+
 # easy_cef_app sources.
 set(EASY_CEF_APP_SRCS
+  ${SHARED_COMMON_SRCS}
   easy_cef_app.cc
   easy_cef_app.h
   easy_cef_client.cc
@@ -16,13 +24,13 @@ set(EASY_CEF_APP_SRCS
   easy_cef_renderer.h
   easy_cef_scheme_handler.cc
   easy_cef_scheme_handler.h
-  shared/app_factory.h
+  shared/client_manager.cc
+  shared/client_manager.h
   shared/constants.cc
   shared/constants.h
+  shared/main.h
   shared/resource_util.cc
   shared/resource_util.h
-  shared/main_util.cc
-  shared/main_util.h
   )
 set(EASY_CEF_APP_SRCS_LINUX
   easy_cef_app_linux.cc
@@ -62,25 +70,27 @@ set(EASY_CEF_APP_SRCS
 
 # easy_cef_app helper sources.
 set(EASY_CEF_APP_HELPER_SRCS_MACOSX
-  process_helper_mac.cc
+  ${EASY_CEF_APP_SRCS}
+  shared/process_helper_mac.cc
+  shared/process_helper_mac.h
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_HELPER_SRCS)
 source_group(easy_cef_app FILES ${EASY_CEF_APP_HELPER_SRCS})
 
 # easy_cef_app resources.
 set(EASY_CEF_APP_RESOURCES_MAC_SRCS_MACOSX
-  mac/Info.plist
-  mac/easy_cef_app.icns
+  res/mac/Info.plist
+  res/mac/easy_cef.icns
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_RESOURCES_MAC_SRCS)
-source_group(easy_cef_app\\\\mac FILES ${EASY_CEF_APP_RESOURCES_MAC_SRCS})
+source_group(easy_cef_app\\\\res\\\\mac FILES ${EASY_CEF_APP_RESOURCES_MAC_SRCS})
 
 set(EASY_CEF_APP_RESOURCES_MAC_ENGLISH_LPROJ_SRCS_MACOSX
-  mac/English.lproj/InfoPlist.strings
-  mac/English.lproj/MainMenu.xib
+  res/mac/English.lproj/InfoPlist.strings
+  res/mac/English.lproj/MainMenu.xib
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_RESOURCES_MAC_ENGLISH_LPROJ_SRCS)
-source_group(easy_cef_app\\\\mac\\\\English.lproj FILES ${EASY_CEF_APP_RESOURCES_MAC_ENGLISH_LPROJ_SRCS})
+source_group(easy_cef_app\\\\res\\\\mac\\\\English.lproj FILES ${EASY_CEF_APP_RESOURCES_MAC_ENGLISH_LPROJ_SRCS})
 
 set(EASY_CEF_APP_RESOURCES_SRCS
   ${EASY_CEF_APP_RESOURCES_MAC_SRCS}
@@ -149,7 +159,7 @@ if(OS_MACOSX)
   add_dependencies(${CEF_HELPER_TARGET} libcef_dll_wrapper)
   target_link_libraries(${CEF_HELPER_TARGET} libcef_dll_wrapper ${CEF_STANDARD_LIBS})
   set_target_properties(${CEF_HELPER_TARGET} PROPERTIES
-    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/mac/helper-Info.plist
+    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/res/mac/helper-Info.plist
     OUTPUT_NAME ${CEF_HELPER_OUTPUT_NAME}
     )
 
@@ -165,7 +175,7 @@ if(OS_MACOSX)
   add_dependencies(${CEF_TARGET} libcef_dll_wrapper "${CEF_HELPER_TARGET}")
   target_link_libraries(${CEF_TARGET} libcef_dll_wrapper ${CEF_STANDARD_LIBS})
   set_target_properties(${CEF_TARGET} PROPERTIES
-    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/mac/Info.plist
+    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/res/mac/Info.plist
     )
 
   # Copy files into the main app bundle.
