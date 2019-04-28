@@ -11,24 +11,26 @@ set(SHARED_COMMON_SRCS
   shared/app_factory.h
   shared/main_util.cc
   shared/main_util.h
+  shared/constants.cc
+  shared/constants.h
   )
-
+# easy_cef_renderer sources.
+set(EASY_CEF_RENDERER_SRCS
+  easy_cef_renderer.cc
+  easy_cef_renderer.h
+  )
 # easy_cef_app sources.
 set(EASY_CEF_APP_SRCS
   ${SHARED_COMMON_SRCS}
+  ${EASY_CEF_RENDERER_SRCS}
   easy_cef_app.cc
   easy_cef_app.h
   easy_cef_client.cc
   easy_cef_client.h
-  easy_cef_renderer.cc
-  easy_cef_renderer.h
   easy_cef_scheme_handler.cc
   easy_cef_scheme_handler.h
   shared/client_manager.cc
   shared/client_manager.h
-  shared/constants.cc
-  shared/constants.h
-  shared/main.h
   shared/resource_util.cc
   shared/resource_util.h
   )
@@ -70,9 +72,9 @@ set(EASY_CEF_APP_SRCS
 
 # easy_cef_app helper sources.
 set(EASY_CEF_APP_HELPER_SRCS_MACOSX
-  ${EASY_CEF_APP_SRCS}
+  ${SHARED_COMMON_SRCS}
+  ${EASY_CEF_RENDERER_SRCS}
   shared/process_helper_mac.cc
-  shared/process_helper_mac.h
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_HELPER_SRCS)
 source_group(easy_cef_app FILES ${EASY_CEF_APP_HELPER_SRCS})

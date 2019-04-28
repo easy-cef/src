@@ -1,7 +1,5 @@
 // george @ 2019/4/28
 
-#include "app/shared/main.h"
-
 #import <Cocoa/Cocoa.h>
 
 #include "include/cef_application_mac.h"

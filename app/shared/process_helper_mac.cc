@@ -2,8 +2,6 @@
 // reserved. Use of this source code is governed by a BSD-style license that can
 // be found in the LICENSE file.
 
-#include "app/shared/process_helper_mac.h"
-
 #include "include/cef_app.h"
 #include "include/wrapper/cef_library_loader.h"
 
@@ -16,8 +14,6 @@
 #if defined(CEF_USE_SANDBOX)
 #include "include/cef_sandbox_mac.h"
 #endif
-
-namespace shared {
 
 // Entry point function for sub-processes.
 int main(int argc, char* argv[]) {
@@ -44,11 +40,11 @@ int main(int argc, char* argv[]) {
   // by main_mac.mm.
   CefRefPtr<CefApp> app;
   switch (shared::GetProcessType(command_line)) {
-    case PROCESS_TYPE_RENDERER:
-      app = CreateRendererProcessApp();
+    case shared::PROCESS_TYPE_RENDERER:
+      app = shared::CreateRendererProcessApp();
       break;
-    case PROCESS_TYPE_OTHER:
-      app = CreateOtherProcessApp();
+    case shared::PROCESS_TYPE_OTHER:
+      app = shared::CreateOtherProcessApp();
       break;
     default:
       break;
@@ -57,5 +53,3 @@ int main(int argc, char* argv[]) {
   // Execute the sub-process.
   return CefExecuteProcess(main_args, app, NULL);
 }
-
-}  // namespace shared
