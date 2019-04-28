@@ -41,8 +41,8 @@ set(EASY_CEF_APP_SRCS_LINUX
   shared/resource_util_posix.cc
   )
 set(EASY_CEF_APP_SRCS_MACOSX
-  easy_cef_app_mac.mm
-  easy_cef_client_mac.mm
+  mac/easy_cef_app_mac.mm
+  mac/easy_cef_client_mac.mm
   shared/resource_util_mac.mm
   shared/resource_util_posix.cc
   )
@@ -74,7 +74,7 @@ set(EASY_CEF_APP_SRCS
 set(EASY_CEF_APP_HELPER_SRCS_MACOSX
   ${SHARED_COMMON_SRCS}
   ${EASY_CEF_RENDERER_SRCS}
-  shared/process_helper_mac.cc
+  mac/process_helper_mac.cc
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_HELPER_SRCS)
 source_group(easy_cef_app FILES ${EASY_CEF_APP_HELPER_SRCS})
