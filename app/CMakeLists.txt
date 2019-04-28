@@ -47,20 +47,20 @@ set(EASY_CEF_APP_SRCS_MACOSX
   shared/resource_util_posix.cc
   )
 set(EASY_CEF_APP_SRCS_WINDOWS
-  easy_cef_app.exe.manifest
-  easy_cef_app.rc
-  easy_cef_app_win.cc
-  easy_cef_client_win.cc
-  resource.h
-  resource_util_win_impl.cc
+  win/easy_cef_app.exe.manifest
+  win/easy_cef_app.rc
+  win/easy_cef_app_win.cc
+  win/easy_cef_client_win.cc
+  win/resource.h
+  win/resource_util_win_impl.cc
   shared/resource_util_win.cc
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_SRCS)
 source_group(easy_cef_app FILES ${EASY_CEF_APP_SRCS})
 
 set(EASY_CEF_APP_RES_SRCS_WINDOWS
-  res/easy_cef.ico
-  res/small.ico
+  res/win/easy_cef.ico
+  res/win/small.ico
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_RES_SRCS)
 source_group(easy_cef_app\\\\res FILES ${EASY_CEF_APP_RES_SRCS})
@@ -222,7 +222,7 @@ if(OS_WINDOWS)
   endif()
 
   # Add the custom manifest files to the executable.
-  ADD_WINDOWS_MANIFEST("${CMAKE_CURRENT_SOURCE_DIR}" "${CEF_TARGET}" "exe")
+  ADD_WINDOWS_MANIFEST("${CMAKE_CURRENT_SOURCE_DIR}/win" "${CEF_TARGET}" "exe")
 
   # Copy binary and resource files to the target output directory.
   COPY_FILES("${CEF_TARGET}" "${CEF_BINARY_FILES}" "${CEF_BINARY_DIR}" "${CEF_TARGET_OUT_DIR}")

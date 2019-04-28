@@ -4,7 +4,7 @@
 
 #include "app/shared/resource_util.h"
 
-#include "app/resource.h"
+#include "app/win/resource.h"
 
 namespace shared {
 
