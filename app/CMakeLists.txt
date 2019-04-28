@@ -148,6 +148,20 @@ endif()
 #
 
 if(OS_MACOSX)
+
+# Copy internal DOM resources into place.
+macro(COPY_MACOSX_INTERNAL_DOM target source_dir app_path)
+  set(SOURCE_DIR "${source_dir}/internal_dom")
+  set(TARGET_DIR "${app_path}/Contents/Resources/dom")
+  # Copy the file as-is.
+  add_custom_command(
+    TARGET ${target}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${SOURCE_DIR}" "${TARGET_DIR}"
+    VERBATIM
+    )
+endmacro()
+
   # Output paths for the app bundles.
   set(CEF_APP "${CEF_TARGET_OUT_DIR}/${CEF_TARGET}.app")
   set(CEF_HELPER_APP "${CEF_TARGET_OUT_DIR}/${CEF_HELPER_OUTPUT_NAME}.app")
@@ -201,6 +215,7 @@ if(OS_MACOSX)
   # Remove these prefixes from input file paths.
   set(PREFIXES "mac/")
   COPY_MACOSX_RESOURCES("${EASY_CEF_APP_RESOURCES_SRCS}" "${PREFIXES}" "${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}" "${CEF_APP}")
+  COPY_MACOSX_INTERNAL_DOM("${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}" "${CEF_APP}")
 endif()
 
 
