@@ -9,10 +9,10 @@ cd build
 
 if [ "$(uname -s)" == "Darwin" ] ; then
   # config project with XCode
-  echo "*** nConfig build as Darwin ... ***"
+  echo "*** Config build as Darwin ... ***"
   cmake -G "Xcode" ..
 else
   # config project with g++
-  echo "*** nConfig build as Linux ... ***"
+  echo "*** Config build as Linux ... ***"
   cmake -G "Unix Makefiles" ..
 fi;
