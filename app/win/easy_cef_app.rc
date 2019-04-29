@@ -34,16 +34,6 @@ IDI_EASY_CEF            ICON                    "..\\res\\win\\easy_cef.ico"
 IDI_SMALL               ICON                    "..\\res\\win\\small.ico"
 
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Binary
-//
-
-IDS_INTERNAL_DOM_INDEX_HTML     BINARY     "..\\internal_dom\\index.html"
-IDS_INTERNAL_DOM_INDEX_CSS      BINARY     "..\\internal_dom\\index.css"
-IDS_INTERNAL_DOM_INDEX_JS       BINARY     "..\\internal_dom\\index.js"
-
-
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
