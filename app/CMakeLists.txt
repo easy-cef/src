@@ -118,6 +118,19 @@ endif()
 SET_CEF_TARGET_OUT_DIR()
 
 
+set(EASY_CEF_INTERNAL_DOM_DIR "internal_dom")
+set(EASY_CEF_RUNTIME_DOM_DIR "dom")
+
+# Copy entire dir to target place.
+macro(COPY_ENTIRE_DIR target source_dir dest_dir)
+  add_custom_command(
+    TARGET ${target}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${source_dir}" "${dest_dir}"
+    VERBATIM
+    )
+endmacro()
+
 #
 # Linux configuration.
 #
@@ -137,6 +150,7 @@ if(OS_LINUX)
   # Copy binary and resource files to the target output directory.
   COPY_FILES("${CEF_TARGET}" "${CEF_BINARY_FILES}" "${CEF_BINARY_DIR}" "${CEF_TARGET_OUT_DIR}")
   COPY_FILES("${CEF_TARGET}" "${CEF_RESOURCE_FILES}" "${CEF_RESOURCE_DIR}" "${CEF_TARGET_OUT_DIR}")
+  COPY_ENTIRE_DIR("${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}/${EASY_CEF_INTERNAL_DOM_DIR}" "${CEF_TARGET_OUT_DIR}/${EASY_CEF_RUNTIME_DOM_DIR}")
 
   # Set SUID permissions on the chrome-sandbox target.
   SET_LINUX_SUID_PERMISSIONS("${CEF_TARGET}" "${CEF_TARGET_OUT_DIR}/chrome-sandbox")
@@ -148,19 +162,6 @@ endif()
 #
 
 if(OS_MACOSX)
-
-# Copy internal DOM resources into place.
-macro(COPY_MACOSX_INTERNAL_DOM target source_dir app_path)
-  set(SOURCE_DIR "${source_dir}/internal_dom")
-  set(TARGET_DIR "${app_path}/Contents/Resources/dom")
-  # Copy the file as-is.
-  add_custom_command(
-    TARGET ${target}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${SOURCE_DIR}" "${TARGET_DIR}"
-    VERBATIM
-    )
-endmacro()
 
   # Output paths for the app bundles.
   set(CEF_APP "${CEF_TARGET_OUT_DIR}/${CEF_TARGET}.app")
@@ -215,7 +216,7 @@ endmacro()
   # Remove these prefixes from input file paths.
   set(PREFIXES "mac/")
   COPY_MACOSX_RESOURCES("${EASY_CEF_APP_RESOURCES_SRCS}" "${PREFIXES}" "${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}" "${CEF_APP}")
-  COPY_MACOSX_INTERNAL_DOM("${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}" "${CEF_APP}")
+  COPY_ENTIRE_DIR("${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}/${EASY_CEF_INTERNAL_DOM_DIR}" "${CEF_APP}/Contents/Resources/${EASY_CEF_RUNTIME_DOM_DIR}")
 endif()
 
 
