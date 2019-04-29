@@ -52,7 +52,6 @@ set(EASY_CEF_APP_SRCS_WINDOWS
   win/easy_cef_app_win.cc
   win/easy_cef_client_win.cc
   win/resource.h
-  win/resource_util_win_impl.cc
   shared/resource_util_win.cc
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_SRCS)

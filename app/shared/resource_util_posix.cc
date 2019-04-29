@@ -36,18 +36,6 @@ bool ReadFileToString(const char* path, std::string& data) {
 
 }  // namespace
 
-bool GetResourceString(const std::string& resource_path,
-                       std::string& out_data) {
-  std::string path;
-  if (!GetResourceDir(path))
-    return false;
-
-  path.append("/");
-  path.append(resource_path);
-
-  return ReadFileToString(path.c_str(), out_data);
-}
-
 CefRefPtr<CefStreamReader> GetResourceReader(const std::string& resource_path) {
   std::string path;
   if (!GetResourceDir(path))

@@ -52,11 +52,6 @@ class EasyCefSchemeHandler : public CefResourceHandler {
           }
         } while (bytes_read > 0);
       }
-      else {
-        DLOG(INFO) << "Resource '" << resource_path.c_str() 
-          << "' not found in '" << dom_path.c_str() << "', fall back to binary resources";
-        shared::GetResourceString(resource_path, data_);
-      }
     }
 
     if (handled) {
