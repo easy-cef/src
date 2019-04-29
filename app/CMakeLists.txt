@@ -35,8 +35,8 @@ set(EASY_CEF_APP_SRCS
   shared/resource_util.h
   )
 set(EASY_CEF_APP_SRCS_LINUX
-  easy_cef_app_linux.cc
-  easy_cef_client_linux.cc
+  linux/easy_cef_app_linux.cc
+  linux/easy_cef_client_linux.cc
   shared/resource_util_linux.cc
   shared/resource_util_posix.cc
   )
