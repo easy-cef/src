@@ -12,6 +12,8 @@ namespace shared {
 
 namespace {
 
+#define BUF_SIZE (4096)
+
 // Returns |url| without the query or fragment components, if any.
 std::string GetUrlWithoutQueryOrFragment(const std::string& url) {
   // Find the first instance of '?' or '#'.
@@ -63,6 +65,36 @@ CefRefPtr<CefResourceHandler> GetResourceHandler(
     return NULL;
 
   return new CefStreamResourceHandler(GetMimeType(resource_path), reader);
+}
+
+bool LoadResourceData(const std::string& resource_path,
+                      std::string& out_data) {
+  if(resource_path.empty())
+    return false;
+
+  std::string dom_path;
+  if(!shared::GetResourceDir(dom_path))
+    return false;
+
+  dom_path.append("/");
+  dom_path.append(resource_path);
+  CefRefPtr<CefStreamReader> reader = 
+    CefStreamReader::CreateForFile(dom_path);
+  if(!reader.get())
+    return false;
+
+  out_data.clear();
+  static char buffer[BUF_SIZE] = {0};
+  size_t bytes_read = 0;
+  do {
+    bytes_read = reader->Read(buffer, 1, sizeof(buffer));
+    if(bytes_read > 0) {
+      buffer[bytes_read] = '\0';
+      out_data.append(buffer);
+    }
+  } while (bytes_read > 0);
+
+  return true;
 }
 
 }  // namespace shared

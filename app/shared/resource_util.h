@@ -21,9 +21,6 @@ namespace shared {
 // ("<target>_files" sub-directory on Linux, app bundle Resources directory on
 // macOS).
 
-// Origin for loading local test resources.
-extern const char kTestOrigin[];
-
 // Retrieve the directory containing resource files.
 bool GetResourceDir(std::string& dir);
 
@@ -42,6 +39,10 @@ CefRefPtr<CefStreamReader> GetResourceReader(const std::string& resource_path);
 // the resource is not found.
 CefRefPtr<CefResourceHandler> GetResourceHandler(
     const std::string& resource_path);
+
+// Load data of resource specified by resource_path
+bool LoadResourceData(const std::string& resource_path,
+                      std::string& out_data);
 
 }  // namespace shared
 
