@@ -43,13 +43,13 @@ bool FileExists(const char* path) {
 }  // namespace
 
 bool GetResourceDir(std::string& dir) {
-  char system_buffer[MAX_PATH];
-  system_buffer[0] = 0;
-  DWORD len = ::GetCurrentDirectoryA(MAX_PATH, system_buffer);
-  if (len == 0 || len > MAX_PATH)
-    return false;
+  char buff[MAX_PATH] = {0};
+  GetModuleFileNameA(NULL, buff, MAX_PATH);
+  char* p = strrchr(buff, '\\');
+  if(p)
+    *p = '\0';
 
-  dir = system_buffer;
+  dir = std::string(buff);
   dir.append("\\");
   dir.append(easycef::kDomDomain);
 
