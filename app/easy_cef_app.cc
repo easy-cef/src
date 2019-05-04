@@ -6,10 +6,12 @@
 
 #include "include/cef_browser.h"
 #include "include/cef_command_line.h"
+#include "include/cef_parser.h"
 #include "include/views/cef_browser_view.h"
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_helpers.h"
 #include "app/shared/constants.h"
+#include "app/shared/resource_util.h"
 #include "app/easy_cef_client.h"
 #include "app/easy_cef_scheme_handler.h"
 
@@ -41,6 +43,31 @@ void EasyCefApp::OnContextInitialized() {
   // Check if a "--url=" value was provided via the command-line. If so, use
   // that instead of the default URL.
   url = command_line->GetSwitchValue("url");
+  
+  // Determining startup point
+  if (url.empty()) {
+    std::string app_json_data;
+    if(shared::LoadResourceData(easycef::kAppConfigFile, app_json_data)) {
+      cef_json_parser_error_t error_code;
+      CefString error_msg;
+      CefRefPtr<CefValue> value =
+          CefParseJSONAndReturnError(
+            app_json_data, 
+            JSON_PARSER_RFC, 
+            error_code, 
+            error_msg);
+      if(value.get()) {
+        CefRefPtr<CefDictionaryValue> app_json =
+          value->GetDictionary();
+        std::string startup_url = 
+          app_json->GetString(easycef::kKeyStartupUrl);
+        if(!startup_url.empty())
+          url = startup_url;
+      }
+    }
+  }
+
+  // Fall back to default entry
   if (url.empty()) {
     url = easycef::kEasyCefScheme;
     url.append("://");

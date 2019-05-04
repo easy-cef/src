@@ -35,9 +35,7 @@ std::string GetResourcePath(const std::string& url) {
     easycef_dom_origin.append("/");
   }
   std::string origin;
-  if (url.find(easycef::kInternalDomOrigin) == 0)
-    origin = easycef::kInternalDomOrigin;
-  else if (url.find(easycef_dom_origin.c_str()) == 0)
+  if (url.find(easycef_dom_origin.c_str()) == 0)
     origin = easycef_dom_origin;
   else
     return std::string();

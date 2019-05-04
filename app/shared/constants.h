@@ -7,8 +7,9 @@ namespace easycef {
 
 extern const char kEasyCefScheme[];
 extern const char kDomDomain[];
-extern const char kInternalDomOrigin[];
 extern const char kDefaultEntryPage[];
+extern const char kAppConfigFile[];
+extern const char kKeyStartupUrl[];
 
 }  // namespace easycef
 
