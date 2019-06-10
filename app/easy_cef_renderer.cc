@@ -35,9 +35,10 @@ void EasyCefRenderer::OnContextReleased(
 
 bool EasyCefRenderer::OnProcessMessageReceived(
   CefRefPtr<CefBrowser> browser,
+  CefRefPtr<CefFrame> frame,
   CefProcessId source_process,
   CefRefPtr<CefProcessMessage> message) {
-  return message_router_->OnProcessMessageReceived(browser, source_process, message);
+  return message_router_->OnProcessMessageReceived(browser, frame, source_process, message);
 }
 
 namespace shared {

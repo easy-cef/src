@@ -89,7 +89,7 @@ void EasyCefApp::OnContextInitialized() {
   easycef::RegisterEasyCefSchemeHandler();
 
   // Create the first browser window.
-  CefBrowserHost::CreateBrowser(window_info, client, url, browser_settings, NULL);
+  CefBrowserHost::CreateBrowser(window_info, client, url, browser_settings, NULL, NULL);
 }
 
 

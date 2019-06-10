@@ -68,11 +68,12 @@ EasyCefClient* EasyCefClient::GetInstance() {
 
 bool EasyCefClient::OnProcessMessageReceived(
   CefRefPtr<CefBrowser> browser,
+  CefRefPtr<CefFrame> frame,
   CefProcessId source_process,
   CefRefPtr<CefProcessMessage> message) {
   CEF_REQUIRE_UI_THREAD();
 
-  return message_router_->OnProcessMessageReceived(browser, source_process, message);
+  return message_router_->OnProcessMessageReceived(browser, frame, source_process, message);
 }
 
 void EasyCefClient::OnTitleChange(CefRefPtr<CefBrowser> browser,
