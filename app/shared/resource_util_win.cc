@@ -31,46 +31,6 @@ bool LoadBinaryResource(int binaryId, DWORD& dwSize, LPBYTE& pBytes) {
   return false;
 }
 
-// Provider implementation for loading BINARY resources from the current
-// executable.
-class BinaryResourceProvider : public CefResourceManager::Provider {
- public:
-  explicit BinaryResourceProvider(const std::string& root_url)
-      : root_url_(root_url) {
-    DCHECK(!root_url.empty());
-  }
-
-  bool OnRequest(scoped_refptr<CefResourceManager::Request> request) OVERRIDE {
-    CEF_REQUIRE_IO_THREAD();
-
-    const std::string& url = request->url();
-    if (url.find(root_url_) != 0L) {
-      // Not handled by this provider.
-      return false;
-    }
-
-    CefRefPtr<CefResourceHandler> handler;
-
-    const std::string& relative_path = url.substr(root_url_.length());
-    if (!relative_path.empty()) {
-      CefRefPtr<CefStreamReader> stream =
-          GetResourceReader(relative_path.data());
-      if (stream.get()) {
-        handler = new CefStreamResourceHandler(
-            request->mime_type_resolver().Run(url), stream);
-      }
-    }
-
-    request->Continue(handler);
-    return true;
-  }
-
- private:
-  std::string root_url_;
-
-  DISALLOW_COPY_AND_ASSIGN(BinaryResourceProvider);
-};
-
 bool FileExists(const char* path) {
   FILE* f = fopen(path, "rb");
   if (f) {
@@ -83,40 +43,17 @@ bool FileExists(const char* path) {
 }  // namespace
 
 bool GetResourceDir(std::string& dir) {
-  char system_buffer[MAX_PATH];
-  system_buffer[0] = 0;
-  DWORD len = ::GetCurrentDirectoryA(MAX_PATH, system_buffer);
-  if (len == 0 || len > MAX_PATH)
-    return false;
+  char buff[MAX_PATH] = {0};
+  GetModuleFileNameA(NULL, buff, MAX_PATH);
+  char* p = strrchr(buff, '\\');
+  if(p)
+    *p = '\0';
 
-  dir = system_buffer;
+  dir = std::string(buff);
   dir.append("\\");
   dir.append(easycef::kDomDomain);
 
   return true;
-}
-
-CefResourceManager::Provider* CreateBinaryResourceProvider(
-    const std::string& url_path) {
-  return new BinaryResourceProvider(url_path);
-}
-
-bool GetResourceString(const std::string& resource_path,
-                       std::string& out_data) {
-  int resource_id = GetResourceId(resource_path);
-  if (resource_id == 0)
-    return false;
-
-  DWORD dwSize;
-  LPBYTE pBytes;
-
-  if (LoadBinaryResource(resource_id, dwSize, pBytes)) {
-    out_data = std::string(reinterpret_cast<char*>(pBytes), dwSize);
-    return true;
-  }
-
-  NOTREACHED();  // The resource should be found.
-  return false;
 }
 
 CefRefPtr<CefStreamReader> GetResourceReaderForFile(const std::string& resource_path) {
@@ -141,20 +78,6 @@ CefRefPtr<CefStreamReader> GetResourceReader(const std::string& resource_path) {
   if(reader)
     return reader;
 
-  // Fall back to binary resources
-  int resource_id = GetResourceId(resource_path);
-  if (resource_id == 0)
-    return NULL;
-
-  DWORD dwSize;
-  LPBYTE pBytes;
-
-  if (LoadBinaryResource(resource_id, dwSize, pBytes)) {
-    return CefStreamReader::CreateForHandler(
-        new CefByteReadHandler(pBytes, dwSize, NULL));
-  }
-
-  NOTREACHED();  // The resource should be found.
   return NULL;
 }
 

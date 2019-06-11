@@ -17,8 +17,6 @@
 namespace easycef {
 namespace {
 
-#define BUF_SIZE (4096)
-
 // Implementation of the scheme handler for easycef:// requests.
 class EasyCefSchemeHandler : public CefResourceHandler {
  public:
@@ -28,38 +26,12 @@ class EasyCefSchemeHandler : public CefResourceHandler {
                       CefRefPtr<CefCallback> callback) OVERRIDE {
     CEF_REQUIRE_IO_THREAD();
 
-    bool handled = false;
     std::string url = request->GetURL();
     //DLOG(INFO) << "ProcessRequest: " << url.c_str();
-    std::string dom_path;
     std::string resource_path = shared::GetResourcePath(url);
     mime_type_ = shared::GetMimeType(resource_path);
-    if (!resource_path.empty() && shared::GetResourceDir(dom_path)) {
-      dom_path.append("/");
-      dom_path.append(resource_path);
-      CefRefPtr<CefStreamReader> reader = 
-        CefStreamReader::CreateForFile(dom_path);
-      data_.clear();
-      if(reader.get()) {
-        static char buffer[BUF_SIZE] = {0};
-        size_t bytes_read = 0;
-        handled = true;
-        do {
-          bytes_read = reader->Read(buffer, 1, sizeof(buffer));
-          if(bytes_read > 0) {
-            buffer[bytes_read] = '\0';
-            data_.append(buffer);
-          }
-        } while (bytes_read > 0);
-      }
-      else {
-        DLOG(INFO) << "Resource '" << resource_path.c_str() 
-          << "' not found in '" << dom_path.c_str() << "', fall back to binary resources";
-        shared::GetResourceString(resource_path, data_);
-      }
-    }
 
-    if (handled) {
+    if (shared::LoadResourceData(resource_path, data_)) {
       // Indicate that the headers are available.
       callback->Continue();
       return true;

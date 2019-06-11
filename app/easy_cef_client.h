@@ -13,7 +13,8 @@ class EasyCefClient : public CefClient,
                       public CefLifeSpanHandler,
                       public CefLoadHandler,
                       public CefRequestHandler,
-                      public CefContextMenuHandler {
+                      public CefContextMenuHandler,
+                      public CefResourceRequestHandler {
  public:
   explicit EasyCefClient(bool use_views);
   ~EasyCefClient();
@@ -38,6 +39,7 @@ class EasyCefClient : public CefClient,
     return this;
   }
   bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser,
+                                CefRefPtr<CefFrame> frame,
                                 CefProcessId source_process,
                                 CefRefPtr<CefProcessMessage> message) OVERRIDE;
 
@@ -63,12 +65,14 @@ class EasyCefClient : public CefClient,
                               CefRefPtr<CefRequest> request,
                               bool user_gesture,
                               bool is_redirect) OVERRIDE;
+  virtual void OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
+                                         TerminationStatus status) OVERRIDE;
+
+  // CefResourceRequestHandler methods:
   virtual CefRefPtr<CefResourceHandler> GetResourceHandler(
     CefRefPtr<CefBrowser> browser,
     CefRefPtr<CefFrame> frame,
     CefRefPtr<CefRequest> request) OVERRIDE;
-  virtual void OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
-                                         TerminationStatus status) OVERRIDE;
 
   // CefContextMenuHandler methods:
   virtual void OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,

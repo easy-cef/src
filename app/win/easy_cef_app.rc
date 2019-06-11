@@ -30,18 +30,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_EASY_CEF            ICON                    "res\easy_cef.ico"
-IDI_SMALL               ICON                    "res\small.ico"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Binary
-//
-
-IDS_INTERNAL_DOM_INDEX_HTML     BINARY     "internal_dom\index.html"
-IDS_INTERNAL_DOM_INDEX_CSS      BINARY     "internal_dom\index.css"
-IDS_INTERNAL_DOM_INDEX_JS       BINARY     "internal_dom\index.js"
+IDI_EASY_CEF            ICON                    "..\\res\\win\\easy_cef.ico"
+IDI_SMALL               ICON                    "..\\res\\win\\small.ico"
 
 
 #ifdef APSTUDIO_INVOKED

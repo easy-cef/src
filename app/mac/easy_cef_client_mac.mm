@@ -7,7 +7,7 @@
 #include "include/cef_browser.h"
 
 void EasyCefClient::PlatformTitleChange(CefRefPtr<CefBrowser> browser,
-                         const CefString& title) {
+                                        const CefString& title) {
   NSView* view = (NSView*)browser->GetHost()->GetWindowHandle();
   NSWindow* window = [view window];
   std::string titleStr(title);

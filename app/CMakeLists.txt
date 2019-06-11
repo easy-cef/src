@@ -35,32 +35,31 @@ set(EASY_CEF_APP_SRCS
   shared/resource_util.h
   )
 set(EASY_CEF_APP_SRCS_LINUX
-  easy_cef_app_linux.cc
-  easy_cef_client_linux.cc
+  linux/easy_cef_app_linux.cc
+  linux/easy_cef_client_linux.cc
   shared/resource_util_linux.cc
   shared/resource_util_posix.cc
   )
 set(EASY_CEF_APP_SRCS_MACOSX
-  easy_cef_app_mac.mm
-  easy_cef_client_mac.mm
+  mac/easy_cef_app_mac.mm
+  mac/easy_cef_client_mac.mm
   shared/resource_util_mac.mm
   shared/resource_util_posix.cc
   )
 set(EASY_CEF_APP_SRCS_WINDOWS
-  easy_cef_app.exe.manifest
-  easy_cef_app.rc
-  easy_cef_app_win.cc
-  easy_cef_client_win.cc
-  resource.h
-  resource_util_win_impl.cc
+  win/easy_cef_app.exe.manifest
+  win/easy_cef_app.rc
+  win/easy_cef_app_win.cc
+  win/easy_cef_client_win.cc
+  win/resource.h
   shared/resource_util_win.cc
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_SRCS)
 source_group(easy_cef_app FILES ${EASY_CEF_APP_SRCS})
 
 set(EASY_CEF_APP_RES_SRCS_WINDOWS
-  res/easy_cef.ico
-  res/small.ico
+  res/win/easy_cef.ico
+  res/win/small.ico
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_RES_SRCS)
 source_group(easy_cef_app\\\\res FILES ${EASY_CEF_APP_RES_SRCS})
@@ -74,7 +73,7 @@ set(EASY_CEF_APP_SRCS
 set(EASY_CEF_APP_HELPER_SRCS_MACOSX
   ${SHARED_COMMON_SRCS}
   ${EASY_CEF_RENDERER_SRCS}
-  shared/process_helper_mac.cc
+  mac/process_helper_mac.cc
   )
 APPEND_PLATFORM_SOURCES(EASY_CEF_APP_HELPER_SRCS)
 source_group(easy_cef_app FILES ${EASY_CEF_APP_HELPER_SRCS})
@@ -118,6 +117,19 @@ endif()
 SET_CEF_TARGET_OUT_DIR()
 
 
+set(EASY_CEF_INTERNAL_DOM_DIR "internal_dom")
+set(EASY_CEF_RUNTIME_DOM_DIR "dom")
+
+# Copy entire dir to target place.
+macro(COPY_ENTIRE_DIR target source_dir dest_dir)
+  add_custom_command(
+    TARGET ${target}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${source_dir}" "${dest_dir}"
+    VERBATIM
+    )
+endmacro()
+
 #
 # Linux configuration.
 #
@@ -137,6 +149,7 @@ if(OS_LINUX)
   # Copy binary and resource files to the target output directory.
   COPY_FILES("${CEF_TARGET}" "${CEF_BINARY_FILES}" "${CEF_BINARY_DIR}" "${CEF_TARGET_OUT_DIR}")
   COPY_FILES("${CEF_TARGET}" "${CEF_RESOURCE_FILES}" "${CEF_RESOURCE_DIR}" "${CEF_TARGET_OUT_DIR}")
+  COPY_ENTIRE_DIR("${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}/${EASY_CEF_INTERNAL_DOM_DIR}" "${CEF_TARGET_OUT_DIR}/${EASY_CEF_RUNTIME_DOM_DIR}")
 
   # Set SUID permissions on the chrome-sandbox target.
   SET_LINUX_SUID_PERMISSIONS("${CEF_TARGET}" "${CEF_TARGET_OUT_DIR}/chrome-sandbox")
@@ -148,6 +161,7 @@ endif()
 #
 
 if(OS_MACOSX)
+
   # Output paths for the app bundles.
   set(CEF_APP "${CEF_TARGET_OUT_DIR}/${CEF_TARGET}.app")
   set(CEF_HELPER_APP "${CEF_TARGET_OUT_DIR}/${CEF_HELPER_OUTPUT_NAME}.app")
@@ -201,6 +215,7 @@ if(OS_MACOSX)
   # Remove these prefixes from input file paths.
   set(PREFIXES "mac/")
   COPY_MACOSX_RESOURCES("${EASY_CEF_APP_RESOURCES_SRCS}" "${PREFIXES}" "${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}" "${CEF_APP}")
+  COPY_ENTIRE_DIR("${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}/${EASY_CEF_INTERNAL_DOM_DIR}" "${CEF_APP}/Contents/Resources/${EASY_CEF_RUNTIME_DOM_DIR}")
 endif()
 
 
@@ -222,9 +237,10 @@ if(OS_WINDOWS)
   endif()
 
   # Add the custom manifest files to the executable.
-  ADD_WINDOWS_MANIFEST("${CMAKE_CURRENT_SOURCE_DIR}" "${CEF_TARGET}" "exe")
+  ADD_WINDOWS_MANIFEST("${CMAKE_CURRENT_SOURCE_DIR}/win" "${CEF_TARGET}" "exe")
 
   # Copy binary and resource files to the target output directory.
   COPY_FILES("${CEF_TARGET}" "${CEF_BINARY_FILES}" "${CEF_BINARY_DIR}" "${CEF_TARGET_OUT_DIR}")
   COPY_FILES("${CEF_TARGET}" "${CEF_RESOURCE_FILES}" "${CEF_RESOURCE_DIR}" "${CEF_TARGET_OUT_DIR}")
+  COPY_ENTIRE_DIR("${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}/${EASY_CEF_INTERNAL_DOM_DIR}" "${CEF_TARGET_OUT_DIR}/${EASY_CEF_RUNTIME_DOM_DIR}")
 endif()
