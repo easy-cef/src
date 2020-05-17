@@ -9,6 +9,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "app/shared/constants.h"
+
 namespace shared {
 
 bool GetResourceDir(std::string& dir) {
@@ -20,10 +22,15 @@ bool GetResourceDir(std::string& dir) {
     return false;
 
   buff[len] = 0;
+  // trim exe name
+  char* p = strrchr(buff, '/');
+  if(p)
+    *p = '\0';
 
-  // Add "_files" to the path.
-  strcpy(buff + len, "_files");
   dir = std::string(buff);
+  dir.append("/");
+  dir.append(easycef::kDomDomain);
+
   return true;
 }
 

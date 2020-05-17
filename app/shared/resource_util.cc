@@ -6,12 +6,13 @@
 
 #include "include/cef_parser.h"
 #include "include/wrapper/cef_stream_resource_handler.h"
+#include "app/shared/constants.h"
 
 namespace shared {
 
-const char kInternalDomOrigin[] = "chrome://internal.dom/";
-
 namespace {
+
+#define BUF_SIZE (4096)
 
 // Returns |url| without the query or fragment components, if any.
 std::string GetUrlWithoutQueryOrFragment(const std::string& url) {
@@ -26,11 +27,21 @@ std::string GetUrlWithoutQueryOrFragment(const std::string& url) {
 }  // namespace
 
 std::string GetResourcePath(const std::string& url) {
-  if (url.find(kInternalDomOrigin) != 0U)
+  static std::string easycef_dom_origin;
+  if(easycef_dom_origin.empty()) {
+    easycef_dom_origin.append(easycef::kEasyCefScheme);
+    easycef_dom_origin.append("://");
+    easycef_dom_origin.append(easycef::kDomDomain);
+    easycef_dom_origin.append("/");
+  }
+  std::string origin;
+  if (url.find(easycef_dom_origin.c_str()) == 0)
+    origin = easycef_dom_origin;
+  else
     return std::string();
 
   const std::string& url_no_query = GetUrlWithoutQueryOrFragment(url);
-  return url_no_query.substr(sizeof(kInternalDomOrigin) - 1);
+  return url_no_query.substr(origin.size());
 }
 
 // Determine the mime type based on the |file_path| file extension.
@@ -52,6 +63,36 @@ CefRefPtr<CefResourceHandler> GetResourceHandler(
     return NULL;
 
   return new CefStreamResourceHandler(GetMimeType(resource_path), reader);
+}
+
+bool LoadResourceData(const std::string& resource_path,
+                      std::string& out_data) {
+  if(resource_path.empty())
+    return false;
+
+  std::string dom_path;
+  if(!shared::GetResourceDir(dom_path))
+    return false;
+
+  dom_path.append("/");
+  dom_path.append(resource_path);
+  CefRefPtr<CefStreamReader> reader = 
+    CefStreamReader::CreateForFile(dom_path);
+  if(!reader.get())
+    return false;
+
+  out_data.clear();
+  static char buffer[BUF_SIZE] = {0};
+  size_t bytes_read = 0;
+  do {
+    bytes_read = reader->Read(buffer, 1, sizeof(buffer));
+    if(bytes_read > 0) {
+      buffer[bytes_read] = '\0';
+      out_data.append(buffer);
+    }
+  } while (bytes_read > 0);
+
+  return true;
 }
 
 }  // namespace shared
