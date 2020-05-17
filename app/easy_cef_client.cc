@@ -162,13 +162,13 @@ void EasyCefClient::OnLoadError(CefRefPtr<CefBrowser> browser,
   if (errorCode == ERR_ABORTED)
     return;
 
-  // Display a load error message.
-  std::stringstream ss;
-  ss << "<html><body bgcolor=\"white\">"
-        "<h2>Failed to load URL "
-     << std::string(failedUrl) << " with error " << std::string(errorText)
-     << " (" << errorCode << ").</h2></body></html>";
-  frame->LoadString(ss.str(), failedUrl);
+  // // Display a load error message.
+  // std::stringstream ss;
+  // ss << "<html><body bgcolor=\"white\">"
+  //       "<h2>Failed to load URL "
+  //    << std::string(failedUrl) << " with error " << std::string(errorText)
+  //    << " (" << errorCode << ").</h2></body></html>";
+  // frame->LoadString(ss.str(), failedUrl);
 }
 
 void EasyCefClient::CloseAllBrowsers(bool force_close) {
